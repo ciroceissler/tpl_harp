@@ -1,0 +1,4 @@
+.*.sw?
+.sw?
+sw/build/
+ase/work/

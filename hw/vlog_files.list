@@ -1,0 +1,11 @@
+# basic building blocks
+-F ${PWD}/../../intel-fpga-bbb/BBB_ccip_async/hw/sim/ccip_async_sim_addenda.txt
+-F ${PWD}/../../intel-fpga-bbb/BBB_cci_mpf/hw/sim/cci_mpf_sim_addenda.txt
+
+# user package
+${PWD}/../../hw/internal_pkg.sv
+${PWD}/../../hw/csr.sv
+
+# dut
+${PWD}/../../hw/template.sv
+${PWD}/../../hw/ccip_std_afu.sv
