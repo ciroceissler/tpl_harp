@@ -1,5 +1,10 @@
 # tpl_harp: template Intel HARP
 
+- install Mentor Graphics ModelSim 10.5c
+- install opae-sdk
+- install intel-fpga-bbb MPF
+- configure scripts/setup.env
+
 ## terminal 1
 
 ```
