@@ -3,8 +3,8 @@
 #include <opae/fpga.h>
 #include <unistd.h>
 
-#define ADDR_BUF1 0x0200
-#define ADDR_BUF2 0x0208
+#define ADDR_BUF_SIZE 0x0200
+#define ADDR_BUF_INCR 0x0208
 #define ADDR_SYNC 0x0300
 
 #define AFU_UUID "C000C966-0D82-4272-9AEF-FE5F84570612"
@@ -15,11 +15,12 @@ int main() {
 
   OPAE_SVC_WRAPPER* fpga = new OPAE_SVC_WRAPPER(AFU_UUID);
 
-  for (int i = 0; i < 10; i++) {
-    fpga->mmioWrite64(ADDR_BUF1, i);
-    fpga->mmioWrite64(ADDR_BUF2, i + 1);
+  fpga->mmioWrite64(ADDR_BUF_SIZE, 100);
 
-    std::cout << "data = " << i << std::endl;
+  for (int i = 0; i < 100; i++) {
+    fpga->mmioWrite64(ADDR_BUF_INCR, 0);
+
+    std::cout << "incr = " << i << std::endl;
   }
 
   uint64_t status = 0;

@@ -12,21 +12,32 @@ module template
   output logic sync
 );
 
-  logic [63:0] data;
+  logic [63:0] counter;
 
-  always_ff@(posedge clk or posedge reset) begin
+  always_ff@(posedge clk) begin
     if (reset) begin
-      data <= '0;
+      counter <= '1;
     end
     else if (pkt_in.valid) begin
-      $display("%t data = %d | addr = %d", $time, pkt_in.data, pkt_in.addr);
+      if (pkt_in.addr == 128) begin
+        counter <= pkt_in.data;
+      end
+      else if (pkt_in.addr == 130) begin
+        counter <= counter - 1;
+      end
+    end
+  end
 
-      data <= pkt_in.data;
+  always_ff@(posedge clk) begin
+    if (reset) begin
+      sync <= '0;
+    end
+    else begin
+      sync <= ('0 == counter) ? '1 : '0;
     end
   end
 
   initial begin
-    sync <= '1;
   end
 
 endmodule : template
