@@ -116,9 +116,7 @@ module csr
         pkt_out.valid <= 1'b1;
       end
 
-      if (sync) begin
-        data_sync <= 64'h1;
-      end
+      data_sync <= sync;
     end
   end
 

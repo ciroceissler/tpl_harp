@@ -30,10 +30,10 @@ module template
 
   always_ff@(posedge clk) begin
     if (reset) begin
-      sync <= '0;
+      sync <= 1'b0;
     end
     else begin
-      sync <= ('0 == counter) ? '1 : '0;
+      sync <= (0 == counter) ? 1'b1 : 1'b0;
     end
   end
 

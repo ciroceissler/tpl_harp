@@ -2,6 +2,7 @@
 #include <uuid/uuid.h>
 #include <opae/fpga.h>
 #include <unistd.h>
+#include <chrono>
 
 #define ADDR_BUF_SIZE 0x0200
 #define ADDR_BUF_INCR 0x0208
@@ -11,24 +12,35 @@
 
 #include "opae_svc_wrapper.h"
 
-int main() {
+int main(int argc, char* argv[]) {
 
   OPAE_SVC_WRAPPER* fpga = new OPAE_SVC_WRAPPER(AFU_UUID);
 
-  fpga->mmioWrite64(ADDR_BUF_SIZE, 100);
+  for (int j = 0; j < 100; j++) {
+    uint64_t status = 1;
+    uint64_t num_transaction = atoi(argv[1]);
 
-  for (int i = 0; i < 100; i++) {
-    fpga->mmioWrite64(ADDR_BUF_INCR, 0);
+    fpga->mmioWrite64(ADDR_BUF_SIZE, num_transaction);
 
-    std::cout << "incr = " << i << std::endl;
-  }
+    while (1 == status) {
+      status = fpga->mmioRead64(ADDR_SYNC);
+    }
 
-  uint64_t status = 0;
+    auto start = std::chrono::high_resolution_clock::now();
 
-  while (0 == status) {
-    status = fpga->mmioRead64(ADDR_SYNC);
+    for (int i = 0; i < num_transaction; i++) {
+      fpga->mmioWrite64(ADDR_BUF_INCR, 0);
+    }
 
-    std::cout << "status = " << status << std::endl;
+    while (0 == status) {
+      status = fpga->mmioRead64(ADDR_SYNC);
+    }
+
+    auto finish = std::chrono::high_resolution_clock::now();
+
+    std::chrono::duration<double> elapsed = finish - start;
+
+    std::cout << "Time: " << elapsed.count() << " s\n";
   }
 
   delete fpga;
